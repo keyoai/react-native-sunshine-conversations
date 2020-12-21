@@ -92,7 +92,7 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void markConversationAsRead(String conversationId, final Promise promise) {
-        Smooch.getConversationById(conversationId, new SmoochCallback<Conversation> {
+        Smooch.getConversationById(conversationId, new SmoochCallback<Conversation>() {
             @Override
             public void run(Response<Conversation> response) {
               if (promise != null) {
@@ -109,7 +109,7 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void getConversations(final Promise promise) {
-        Smooch.getConversationsList(new SmoochCallback<java.util.List<Conversation>> {
+        Smooch.getConversationsList(new SmoochCallback<java.util.List<Conversation>>() {
             @Override
             public void run(Response<java.util.List<Conversation>> response) {
               if (promise != null) {
@@ -125,7 +125,7 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void sendMessage(String conversationId, String message, final Promise promise) {
-        Smooch.getConversationById(conversationId, new SmoochCallback<Conversation> {
+        Smooch.getConversationById(conversationId, new SmoochCallback<Conversation>() {
             @Override
             public void run(Response<Conversation> response) {
               if (promise != null) {
