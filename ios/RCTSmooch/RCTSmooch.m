@@ -143,7 +143,7 @@
 @end
 
 
-@interface NotificationManager
+@interface NotificationManager : NSObject
 @end
 
 @implementation NotificationManager
