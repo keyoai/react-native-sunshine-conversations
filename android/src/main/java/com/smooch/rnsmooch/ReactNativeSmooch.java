@@ -100,7 +100,7 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
                     promise.reject("" + response.getStatus(), response.getError());
                     return;
                 }
-                response.markAllAsRead();
+                response.getData().markAllAsRead();
                 promise.resolve(null);
               }
             }
@@ -133,7 +133,7 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
                     promise.reject("" + response.getStatus(), response.getError());
                     return;
                 }
-                response.sendMessage(new Message(message, message));
+                response.getData().sendMessage(new Message(message, message));
                 promise.resolve(null);
               }
             }
