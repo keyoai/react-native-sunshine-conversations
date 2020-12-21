@@ -42,7 +42,7 @@ import io.smooch.ui.ConversationActivity;
 import io.smooch.core.MessageModifierDelegate;
 import io.smooch.core.Message;
 import io.smooch.core.Conversation;
-import io.smooch.core.ConversationDelegateAdapter;
+// import io.smooch.core.ConversationDelegateAdapter;
 import io.smooch.core.ConversationDetails;
 import io.smooch.core.LogoutResult;
 import io.smooch.core.LoginResult;
@@ -400,7 +400,7 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
             public Message beforeSend(ConversationDetails conversationDetails, Message message) {
                 if (globalMetadata != null) {
                     Log.d("Smooch", String.valueOf(globalMetadata));
-                    message.setMetadata(getProperties(globalMetadata));
+//                     message.setMetadata(getProperties(globalMetadata));
                 }
                 return message;
             }
@@ -435,8 +435,8 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
                 String name = (String) message.getMetadata().get("location_display_name");
                 params.putString("location_display_name", name);
 
-                setMetadata(params);
-                updateConversation("Conversation", name, null);
+//                 setMetadata(params);
+//                 updateConversation("Conversation", name, null);
                 if (sendHideEvent) {
                     Log.d("onUnreadCountUpdate", "on beforeNotification");
                     sendEvent(mreactContext, "unreadCountUpdate", null);
