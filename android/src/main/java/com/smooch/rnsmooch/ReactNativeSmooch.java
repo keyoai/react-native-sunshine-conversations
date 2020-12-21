@@ -133,7 +133,7 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
                     promise.reject("" + response.getStatus(), response.getError());
                     return;
                 }
-                response.getData().sendMessage(new Message(message, message));
+                response.getData().sendMessage(new Message(message, message, new java.util.Map<java.lang.String,java.lang.Object>());
                 promise.resolve(null);
               }
             }
