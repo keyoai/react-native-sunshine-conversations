@@ -104,7 +104,7 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
                 promise.resolve(null);
               }
             }
-        })
+        });
     }
 
     @ReactMethod
@@ -120,7 +120,24 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
                 promise.resolve(response.getData());
               }
             }
-        })
+        });
+    }
+
+    @ReactMethod
+    public void sendMessage(String conversationId, String message, final Promise promise) {
+        Smooch.getConversationById(conversationId, new SmoochCallback<Conversation> {
+            @Override
+            public void run(Response<Conversation> response) {
+              if (promise != null) {
+                if (response.getError() != null) {
+                    promise.reject("" + response.getStatus(), response.getError());
+                    return;
+                }
+                response.sendMessage(new Message(message, message));
+                promise.resolve(null);
+              }
+            }
+        });
     }
 
 	@ReactMethod
