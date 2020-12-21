@@ -1,17 +1,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.smooch.rnsmooch" xmlns:tools="http://schemas.android.com/tools">
+    package="com.smooch.rnsmooch">
     <application>
         <provider
                 android:name="com.smooch.rnsmooch.FileProvider"
                 android:authorities="${applicationId}.com.smooch.rnsmooch.provider"
                 android:exported="false"
                 android:grantUriPermissions="true"
-                tools:replace="android:authorities"
         >
             <meta-data
                     android:name="android.support.FILE_PROVIDER_PATHS"
                     android:resource="@xml/provider_install_paths"
-                    tools:replace="android:resource"
             />
         </provider>
     </application>
