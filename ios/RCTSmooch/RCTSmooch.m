@@ -236,33 +236,31 @@ RCT_EXPORT_METHOD(login:(NSString*)externalId jwt:(NSString*)jwt resolver:(RCTPr
 RCT_EXPORT_METHOD(markConversationAsRead:(NSString*)conversationId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSLog(@"Smooch Mark Conversation Read");
   dispatch_async(dispatch_get_main_queue(), ^{
-      [Smooch conversationById:conversationId completionHandler:(nullable void ( ^ ) ( NSError *_Nullable error , SKTConversation *_Nullable conversation )) {
+      [Smooch conversationById:conversationId completionHandler:(^(NSError *_Nullable error , SKTConversation *_Nullable conversation )) {
           if (error) {
               NSLog(@"Error marking conversation as read");
-              reject(
-                 userInfo[SKTErrorCodeIdentifier],
-                 userInfo[SKTErrorDescriptionIdentifier],
-                 error);
+              reject(error);
           }
           else {
               [conversation markAllAsRead];
               resolve();
           }
       }]
-      [Smooch login:externalId jwt:jwt completionHandler:^(NSError * _Nullable error, NSDictionary * _Nullable userInfo) {
+  });
+};
+
+RCT_EXPORT_METHOD(getConversations:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  NSLog(@"Smooch get conversations");
+  dispatch_async(dispatch_get_main_queue(), ^{
+      [Smooch getConversations:(^(NSError * _Nullable error, NSArray *_Nullable conversations)) {
           if (error) {
-              NSLog(@"Error Login");
-              reject(
-                 userInfo[SKTErrorCodeIdentifier],
-                 userInfo[SKTErrorDescriptionIdentifier],
-                 error);
+              NSLog(@"Error getting conversations");
+              reject(error);
           }
           else {
-              MyConversationDelegate *myconversation = [MyConversationDelegate sharedManager];
-              [myconversation setControllerState:self];
-              resolve(userInfo);
+              resolve(conversations);
           }
-      }];
+      }]
   });
 };
 
