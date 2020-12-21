@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.smooch.rnsmooch">
+    package="com.smooch.rnsmooch" xmlns:tools="http://schemas.android.com/tools">
     <application>
         <provider
                 android:name="com.smooch.rnsmooch.FileProvider"
