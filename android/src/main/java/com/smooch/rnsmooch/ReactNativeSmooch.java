@@ -90,6 +90,23 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
         });
     }
 
+    @ReactMethod
+    public void markConversationAsRead(String conversationId, final Promise promise) {
+        Smooch.getConversationById(conversationId, new SmoochCallback<Conversation> {
+            @Override
+            public void run(Response<Conversation> response) {
+              if (promise != null) {
+                if (response.getError() != null) {
+                    promise.reject("" + response.getStatus(), response.getError());
+                    return;
+                }
+                response.markAllAsRead();
+                promise.resolve(null);
+              }
+            }
+        })
+    }
+
 	@ReactMethod
 	public void setSendHideEvent(Boolean hideEvent) {
 	    sendHideEvent = hideEvent;
