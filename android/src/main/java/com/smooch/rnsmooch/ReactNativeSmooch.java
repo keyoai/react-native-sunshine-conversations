@@ -183,45 +183,45 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
         promise.resolve(unreadCount);
     }
 
-    @ReactMethod
-    public void getGroupCounts(final Promise promise) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getReactApplicationContext());
-        Integer totalUnreadCount = 0;
-        List<Message> messages = Smooch.getConversation().getMessages();
-        Map<String, Integer> map = new HashMap();
-        for (Message message : messages) {
-            if (message.getMetadata() != null) {
-                String name = (String) message.getMetadata().get("short_property_code");
-                String msgId = message.getId();
-                if (msgId != null) {
-                    if (map.get(name) == null) {
-                        map.put(name, 0);
-                    }
-                    Boolean isRead = sharedPreferences.getBoolean(msgId, false);
-                    if (!isRead) {
-                        totalUnreadCount += 1;
-                        Integer count = map.get(name);
-                        map.put(name, count + 1);
-                    }
-                }
-            }
-        }
-
-        WritableArray promiseArray = Arguments.createArray();
-        WritableMap totalMap = Arguments.createMap();
-        totalMap.putInt("totalUnReadCount", totalUnreadCount);
-        promiseArray.pushMap(totalMap);
-
-        for (Map.Entry<String, Integer> entry : map.entrySet()) {
-            String name = entry.getKey();
-            Integer value = entry.getValue();
-            WritableMap nMap = Arguments.createMap();
-            nMap.putString("short_property_code", name);
-            nMap.putInt("unReadCount", value);
-            promiseArray.pushMap(nMap);
-        }
-        promise.resolve(promiseArray);
-    }
+//     @ReactMethod
+//     public void getGroupCounts(final Promise promise) {
+//         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getReactApplicationContext());
+//         Integer totalUnreadCount = 0;
+//         List<Message> messages = Smooch.getConversation().getMessages();
+//         Map<String, Integer> map = new HashMap();
+//         for (Message message : messages) {
+//             if (message.getMetadata() != null) {
+//                 String name = (String) message.getMetadata().get("short_property_code");
+//                 String msgId = message.getId();
+//                 if (msgId != null) {
+//                     if (map.get(name) == null) {
+//                         map.put(name, 0);
+//                     }
+//                     Boolean isRead = sharedPreferences.getBoolean(msgId, false);
+//                     if (!isRead) {
+//                         totalUnreadCount += 1;
+//                         Integer count = map.get(name);
+//                         map.put(name, count + 1);
+//                     }
+//                 }
+//             }
+//         }
+//
+//         WritableArray promiseArray = Arguments.createArray();
+//         WritableMap totalMap = Arguments.createMap();
+//         totalMap.putInt("totalUnReadCount", totalUnreadCount);
+//         promiseArray.pushMap(totalMap);
+//
+//         for (Map.Entry<String, Integer> entry : map.entrySet()) {
+//             String name = entry.getKey();
+//             Integer value = entry.getValue();
+//             WritableMap nMap = Arguments.createMap();
+//             nMap.putString("short_property_code", name);
+//             nMap.putInt("unReadCount", value);
+//             promiseArray.pushMap(nMap);
+//         }
+//         promise.resolve(promiseArray);
+//     }
 
     @ReactMethod
     public void getMessages(final Promise promise) {
@@ -256,125 +256,125 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
         promise.resolve(promiseArray);
     }
 
-    @ReactMethod
-    public void getIncomeMessages(final Promise promise) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getReactApplicationContext());
+//     @ReactMethod
+//     public void getIncomeMessages(final Promise promise) {
+//         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getReactApplicationContext());
+//
+//         List<Message> messages = Smooch.getConversation().getMessages();
+//
+//         WritableArray promiseArray = Arguments.createArray();
+//         for (Message message : messages) {
+//             if (message != null && !message.isFromCurrentUser()) {
+//                 WritableMap map = Arguments.createMap();
+//                 DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+//                 map.putString("date", df2.format(message.getDate()));
+//                 String msgId = message.getId();
+//                 if (msgId != null) {
+//                     map.putString("id", msgId); // example: 5fbdc1a608b132000c691500
+//                     Boolean isRead = sharedPreferences.getBoolean(msgId, false);
+//                     map.putBoolean("is_read", isRead);
+//                 } else {
+//                     map.putString("id", "0" );
+//                     map.putBoolean("is_read", false);
+//                 }
+//                 if (message.getMetadata() != null) {
+//                     if (message.getMetadata().get("short_property_code") != null) {
+//                         map.putString("chat_type", "property");
+//                         map.putString("short_property_code", (String) message.getMetadata().get("short_property_code"));
+//                         if (message.getMetadata().get("location_display_name") != null) {
+//                             map.putString("location_display_name", (String) message.getMetadata().get("location_display_name"));
+//                         } else {
+//                             map.putString("location_display_name", (String) message.getName());
+//                         }
+//                     } // chat_type of employee and employee_name is not real anymore
+//                 }
+//                 promiseArray.pushMap(map);
+//             }
+//         }
+//         promise.resolve(promiseArray);
+//     }
 
-        List<Message> messages = Smooch.getConversation().getMessages();
+//     @ReactMethod
+//     public void getMessagesMetadata(final ReadableMap metadata, Promise promise) {
+//         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getReactApplicationContext());
+//
+//         List<Message> messages = Smooch.getConversation().getMessages();
+//         WritableArray promiseArray = Arguments.createArray();
+//
+//         for (Message message : messages) {
+//             if (message != null && message.getMetadata() != null && message.getMetadata().get("short_property_code").equals(getProperties(metadata).get("short_property_code"))) {
+//                 WritableMap map = Arguments.createMap();
+//                 map.putString("name", message.getName());
+//                 map.putString("text", message.getText());
+//                 map.putBoolean("isFromCurrentUser", message.isFromCurrentUser());
+//                 map.putString("messageId", message.getId());
+//                 if (message.getMetadata() != null) {
+//                     map.putString("short_property_code", (String) message.getMetadata().get("short_property_code"));
+//                     map.putString("location_display_name", (String) message.getMetadata().get("location_display_name"));
+//                 }
+//                 String msgId = message.getId();
+//                 if (message.isFromCurrentUser()) {
+//                     map.putBoolean("isRead", true);
+//                 } else if (msgId != null) {
+//                     Boolean isRead = sharedPreferences.getBoolean(msgId, false);
+//                     map.putBoolean("isRead", isRead);
+//                 } else {
+//                     map.putBoolean("isRead", false);
+//                 }
+//                 promiseArray.pushMap(map);
+//             }
+//         }
+//         promise.resolve(promiseArray);
+//     }
 
-        WritableArray promiseArray = Arguments.createArray();
-        for (Message message : messages) {
-            if (message != null && !message.isFromCurrentUser()) {
-                WritableMap map = Arguments.createMap();
-                DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-                map.putString("date", df2.format(message.getDate()));
-                String msgId = message.getId();
-                if (msgId != null) {
-                    map.putString("id", msgId); // example: 5fbdc1a608b132000c691500
-                    Boolean isRead = sharedPreferences.getBoolean(msgId, false);
-                    map.putBoolean("is_read", isRead);
-                } else {
-                    map.putString("id", "0" );
-                    map.putBoolean("is_read", false);
-                }
-                if (message.getMetadata() != null) {
-                    if (message.getMetadata().get("short_property_code") != null) {
-                        map.putString("chat_type", "property");
-                        map.putString("short_property_code", (String) message.getMetadata().get("short_property_code"));
-                        if (message.getMetadata().get("location_display_name") != null) {
-                            map.putString("location_display_name", (String) message.getMetadata().get("location_display_name"));
-                        } else {
-                            map.putString("location_display_name", (String) message.getName());
-                        }
-                    } // chat_type of employee and employee_name is not real anymore
-                }
-                promiseArray.pushMap(map);
-            }
-        }
-        promise.resolve(promiseArray);
-    }
+//     @ReactMethod
+//     public void setFirstName(String firstName) {
+//         User.getCurrentUser().setFirstName(firstName);
+//     }
+//
+//     @ReactMethod
+//     public void setLastName(String lastName) {
+//         User.getCurrentUser().setLastName(lastName);
+//     }
+//
+//     @ReactMethod
+//     public void setEmail(String email) {
+//         User.getCurrentUser().setEmail(email);
+//     }
+//
+//     @ReactMethod
+//     public void setRead(String msgId) {
+//         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getReactApplicationContext());
+//
+//         SharedPreferences.Editor editor = sharedPreferences.edit();
+//         editor.putBoolean(msgId, true);
+//         editor.apply();
+//     }
 
-    @ReactMethod
-    public void getMessagesMetadata(final ReadableMap metadata, Promise promise) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getReactApplicationContext());
-
-        List<Message> messages = Smooch.getConversation().getMessages();
-        WritableArray promiseArray = Arguments.createArray();
-
-        for (Message message : messages) {
-            if (message != null && message.getMetadata() != null && message.getMetadata().get("short_property_code").equals(getProperties(metadata).get("short_property_code"))) {
-                WritableMap map = Arguments.createMap();
-                map.putString("name", message.getName());
-                map.putString("text", message.getText());
-                map.putBoolean("isFromCurrentUser", message.isFromCurrentUser());
-                map.putString("messageId", message.getId());
-                if (message.getMetadata() != null) {
-                    map.putString("short_property_code", (String) message.getMetadata().get("short_property_code"));
-                    map.putString("location_display_name", (String) message.getMetadata().get("location_display_name"));
-                }
-                String msgId = message.getId();
-                if (message.isFromCurrentUser()) {
-                    map.putBoolean("isRead", true);
-                } else if (msgId != null) {
-                    Boolean isRead = sharedPreferences.getBoolean(msgId, false);
-                    map.putBoolean("isRead", isRead);
-                } else {
-                    map.putBoolean("isRead", false);
-                }
-                promiseArray.pushMap(map);
-            }
-        }
-        promise.resolve(promiseArray);
-    }
-
-    @ReactMethod
-    public void setFirstName(String firstName) {
-        User.getCurrentUser().setFirstName(firstName);
-    }
-
-    @ReactMethod
-    public void setLastName(String lastName) {
-        User.getCurrentUser().setLastName(lastName);
-    }
-
-    @ReactMethod
-    public void setEmail(String email) {
-        User.getCurrentUser().setEmail(email);
-    }
-
-    @ReactMethod
-    public void setRead(String msgId) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getReactApplicationContext());
-
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(msgId, true);
-        editor.apply();
-    }
-
-    @ReactMethod
-    public void setMetadata(final ReadableMap metadata) {
-        this.globalMetadata = metadata;
-    }
-
-    @ReactMethod
-    public void updateConversation(String title, String description, final Promise promise) {
-        String conversationId = Smooch.getConversation().getId();
-        if (conversationId != null) {
-            Smooch.updateConversationById(conversationId, title, description, null, null, new SmoochCallback<Conversation>() {
-                @Override
-                public void run(Response<Conversation> response) {
-                    if (promise != null) {
-                        if (response.getError() != null) {
-                            Log.d("Update conversation", String.valueOf(response.getError()));
-                            promise.reject("" + response.getStatus(), response.getError());
-                            return;
-                        }
-                        promise.resolve(null);
-                    }
-                }
-            });
-        }
-    }
+//     @ReactMethod
+//     public void setMetadata(final ReadableMap metadata) {
+//         this.globalMetadata = metadata;
+//     }
+//
+//     @ReactMethod
+//     public void updateConversation(String title, String description, final Promise promise) {
+//         String conversationId = Smooch.getConversation().getId();
+//         if (conversationId != null) {
+//             Smooch.updateConversationById(conversationId, title, description, null, null, new SmoochCallback<Conversation>() {
+//                 @Override
+//                 public void run(Response<Conversation> response) {
+//                     if (promise != null) {
+//                         if (response.getError() != null) {
+//                             Log.d("Update conversation", String.valueOf(response.getError()));
+//                             promise.reject("" + response.getStatus(), response.getError());
+//                             return;
+//                         }
+//                         promise.resolve(null);
+//                     }
+//                 }
+//             });
+//         }
+//     }
 
     private Map<String, Object> getProperties(ReadableMap properties) {
         ReadableMapKeySetIterator iterator = properties.keySetIterator();
