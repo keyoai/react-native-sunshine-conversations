@@ -39,7 +39,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.facebook.react:react-native:+'
-    api 'io.smooch:core:8.+'
-    api 'io.smooch:ui:8.+'
+    api 'io.smooch:core:7.+'
+    api 'io.smooch:ui:7.+'
     implementation 'androidx.appcompat:appcompat:1.0.0'
 }
