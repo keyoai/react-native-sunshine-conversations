@@ -277,14 +277,25 @@ RCT_EXPORT_METHOD(getConversations:(RCTPromiseResolveBlock)resolve rejecter:(RCT
           else {
               NSMutableArray *values = [NSMutableArray arrayWithCapacity:1];
               for (SKTConversation *element in conversations) {
+                  NSMutableArray *participants = [NSMutableArray arrayWithCapacity:1];
+                  for (SKTParticipant *participant in element.participants) {
+                      NSDictionary *object = @{
+                          @"userId": participant.userId,
+                          @"participantId": participant.participantId,
+                      };
+                      [participants addObject:object];
+                  }
+                  NSArray *participantValues = [NSArray arrayWithArray:participants];
                   NSDictionary *object = @{
                       @"id": element.conversationId,
+                      @"displayName": element.displayName,
+                      @"lastUpdatedAt": element.lastUpdatedAt,
+                      @"participants": participantValues,
                   };
-                  NSLog(@"Chillin %@", element.conversationId);
                   [values addObject:object];
               }
               NSArray *returnVal = [NSArray arrayWithArray:values];
-            resolve(returnVal);
+              resolve(returnVal);
           }
       }];
   });
