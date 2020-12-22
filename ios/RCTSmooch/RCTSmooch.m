@@ -171,7 +171,7 @@ RCT_EXPORT_MODULE();
 
 - (NSArray<NSString *> *)supportedEvents
 {
-  return @[@"unreadCountUpdate"];
+  return @[@"unreadCountUpdate", @"message", @"participant:added", @"participant:removed"];
 }
 
 - (BOOL)isInteger:(NSString *)toCheck {
