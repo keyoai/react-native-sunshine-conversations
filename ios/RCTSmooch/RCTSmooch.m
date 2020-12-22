@@ -236,48 +236,48 @@ RCT_EXPORT_METHOD(login:(NSString*)externalId jwt:(NSString*)jwt resolver:(RCTPr
 RCT_EXPORT_METHOD(markConversationAsRead:(NSString*)conversationId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSLog(@"Smooch Mark Conversation Read");
   dispatch_async(dispatch_get_main_queue(), ^{
-      [Smooch conversationById:conversationId completionHandler:(^(NSError *_Nullable error , SKTConversation *_Nullable conversation )) {
+      [Smooch conversationById:conversationId completionHandler:^(NSError * _Nullable error, SKTConversation * _Nullable conversation) {
           if (error) {
               NSLog(@"Error marking conversation as read");
-              reject(error);
+              reject(@"Error", @"Cannot mark conversation as read", error);
           }
           else {
               [conversation markAllAsRead];
-              resolve();
+              resolve(NULL);
           }
-      }]
+      }];
   });
 };
 
 RCT_EXPORT_METHOD(sendMessage:(NSString*)conversationId message:(NSString*) resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSLog(@"Smooch send message");
   dispatch_async(dispatch_get_main_queue(), ^{
-      [Smooch conversationById:conversationId completionHandler:(^(NSError *_Nullable error , SKTConversation *_Nullable conversation )) {
+      [Smooch conversationById:conversationId completionHandler:^(NSError * _Nullable error, SKTConversation * _Nullable conversation) {
           if (error) {
-              NSLog(@"Error marking conversation as read");
-              reject(error);
+              NSLog(@"Error sending message");
+              reject(@"Error", @"Error sending message", error);
           }
           else {
               // Need to actually send message
               // [conversation sendMessage ];
-              resolve();
+              resolve(NULL);
           }
-      }]
+      }];
   });
 };
 
 RCT_EXPORT_METHOD(getConversations:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSLog(@"Smooch get conversations");
   dispatch_async(dispatch_get_main_queue(), ^{
-      [Smooch getConversations:(^(NSError * _Nullable error, NSArray *_Nullable conversations)) {
+      [Smooch getConversations:(^(NSError * _Nullable error, NSArray *_Nullable conversations) {
           if (error) {
               NSLog(@"Error getting conversations");
-              reject(error);
+              reject(@"Error", @"Error getting conversations", error);
           }
           else {
               resolve(conversations);
           }
-      }]
+      }];
   });
 };
 
@@ -297,12 +297,6 @@ RCT_EXPORT_METHOD(logout:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRej
           }
       }];
   });
-};
-
-RCT_EXPORT_METHOD(setUserProperties:(NSDictionary*)options) {
-  NSLog(@"Smooch setUserProperties with %@", options);
-
-  [[SKTUser currentUser] addProperties:options];
 };
 
 RCT_EXPORT_METHOD(getUserId:(RCTPromiseResolveBlock)resolve
