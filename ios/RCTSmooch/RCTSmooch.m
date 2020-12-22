@@ -249,7 +249,7 @@ RCT_EXPORT_METHOD(markConversationAsRead:(NSString*)conversationId resolver:(RCT
   });
 };
 
-RCT_EXPORT_METHOD(sendMessage:(NSString*)conversationId message:(NSString*) resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(sendMessage:(NSString*)conversationId message:(NSString*)message resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSLog(@"Smooch send message");
   dispatch_async(dispatch_get_main_queue(), ^{
       [Smooch conversationById:conversationId completionHandler:^(NSError * _Nullable error, SKTConversation * _Nullable conversation) {
@@ -258,8 +258,8 @@ RCT_EXPORT_METHOD(sendMessage:(NSString*)conversationId message:(NSString*) reso
               reject(@"Error", @"Error sending message", error);
           }
           else {
-              // Need to actually send message
-              // [conversation sendMessage ];
+              SKTMessage *newMessage = [[SKTMessage alloc] initWithText:message];
+              [conversation sendMessage:newMessage];
               resolve(NULL);
           }
       }];
