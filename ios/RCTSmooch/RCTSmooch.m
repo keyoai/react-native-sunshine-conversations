@@ -275,8 +275,16 @@ RCT_EXPORT_METHOD(getConversations:(RCTPromiseResolveBlock)resolve rejecter:(RCT
               reject(@"Error", @"Error getting conversations", error);
           }
           else {
-            NSDictionary *dict = [NSDictionary dictionaryWithObjects:records forKeys:[records valueForKey:@"intField"]];
-            resolve(dict);
+              NSMutableArray *values = [NSMutableArray arrayWithCapacity:1];
+              for (SKTConversation *element in conversations) {
+                  NSDictionary *object = @{
+                      @"id": element.conversationId,
+                  };
+                  NSLog(@"Chillin %@", element.conversationId);
+                  [values addObject:object];
+              }
+              NSArray *returnVal = [NSArray arrayWithArray:values];
+            resolve(returnVal);
           }
       }];
   });
