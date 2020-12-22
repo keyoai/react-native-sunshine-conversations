@@ -269,7 +269,7 @@ RCT_EXPORT_METHOD(sendMessage:(NSString*)conversationId message:(NSString*) reso
 RCT_EXPORT_METHOD(getConversations:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSLog(@"Smooch get conversations");
   dispatch_async(dispatch_get_main_queue(), ^{
-      [Smooch getConversations:(^(NSError * _Nullable error, NSArray *_Nullable conversations) {
+      [Smooch getConversations:^(NSError * _Nullable error, NSArray *_Nullable conversations) {
           if (error) {
               NSLog(@"Error getting conversations");
               reject(@"Error", @"Error getting conversations", error);
