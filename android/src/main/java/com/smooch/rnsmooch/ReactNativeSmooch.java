@@ -499,12 +499,12 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
                 Log.d("__SMOOCH__", "Messages received");
                 for (Message m : list) {
                     WritableMap message = new WritableNativeMap();
-                    message.putString("id", message.getId());
-                    message.putString("date", message.getDate().toString());
-                    message.putString("text", message.getText());
-                    message.putString("author", message.getUserId());
+                    message.putString("id", m.getId());
+                    message.putString("date", m.getDate().toString());
+                    message.putString("text", m.getText());
+                    message.putString("author", m.getUserId());
                     message.putString("conversationId", conversation.getId());
-                    message.putMap("metadata", convertMapToReactNativeMap(message.getMetadata()));
+                    message.putMap("metadata", convertMapToReactNativeMap(m.getMetadata()));
                     sendEvent(mreactContext, "message", message);
                 }
             }
