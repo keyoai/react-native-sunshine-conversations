@@ -385,38 +385,33 @@ RCT_EXPORT_METHOD(getGroupCounts:(RCTPromiseResolveBlock)resolve
   resolve(groups);
 };
 
-RCT_EXPORT_METHOD(getMessages:(RCTPromiseResolveBlock)resolve
+RCT_EXPORT_METHOD(getMessages:(NSString*)conversationId resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
   NSLog(@"Smooch getMessages");
-  NSUserDefaults *db = [NSUserDefaults standardUserDefaults];
-
-  NSMutableArray *newMessages = [[NSMutableArray alloc] init];
-  NSArray *messages = [Smooch conversation].messages;
-  for (id message in messages) {
-      if (message != nil) {
-          NSMutableDictionary *newMessage = [[NSMutableDictionary alloc] init];
-          newMessage[@"name"] = [message name]; // displayName
-          newMessage[@"text"] = [message text];
-          newMessage[@"isFromCurrentUser"] = @([message isFromCurrentUser]);
-          newMessage[@"messageId"] = [message messageId];
-          NSDictionary *options = [message metadata];
-          if (options != nil) {
-              newMessage[@"short_property_code"] = options[@"short_property_code"];
-              newMessage[@"location_display_name"] = options[@"location_display_name"];
-          }
-          NSString *msgId = [message messageId];
-          if ([message isFromCurrentUser]) {
-              newMessage[@"isRead"] = @(YES);
-          } else if (msgId != nil) {
-              BOOL isRead = [db boolForKey:msgId];
-              newMessage[@"isRead"] = @(isRead);
-          } else {
-              newMessage[@"isRead"] = @(NO);
-          }
-          [newMessages addObject: newMessage];
-      }
-  }
-  resolve(newMessages);
+    [Smooch conversationById:conversationId completionHandler:^(NSError * _Nullable error, SKTConversation * _Nullable conversation) {
+        if (error) {
+            NSLog(@"Error marking conversation as read");
+            reject(@"Error", @"Cannot mark conversation as read", error);
+        }
+        else {
+            NSMutableArray *newMessages = [[NSMutableArray alloc] init];
+            NSArray *messages = conversation.messages;
+            for (id message in messages) {
+                if (message != nil && [message metadata] != nil && [message metadata][@"author"] != nil) {
+                    NSMutableDictionary *newMessage = [[NSMutableDictionary alloc] init];
+                    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+                    [formatter setDateFormat:@"dd"];
+                    newMessage[@"id"] = [message messageId]; // displayName
+                    newMessage[@"text"] = [message text];
+                    newMessage[@"date"] = [formatter stringFromDate:[message date]];
+                    newMessage[@"author"] = [message metadata][@"author"];
+                    newMessage[@"conversationId"] = [conversation conversationId];
+                    [newMessages addObject: newMessage];
+                }
+            }
+            resolve(newMessages);
+        }
+    }];
 };
 
 RCT_EXPORT_METHOD(getIncomeMessages:(RCTPromiseResolveBlock)resolve
