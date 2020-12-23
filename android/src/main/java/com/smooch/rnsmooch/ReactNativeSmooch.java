@@ -114,6 +114,27 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
         });
     }
 
+    private WritableMap convertConversationToMap(Conversation c) {
+        WritableMap map = new WritableNativeMap();
+
+        WritableArray participantsArr = new WritableArray();
+        java.util.List<Participant> participants = c.getParticipants();
+
+        for (Participant p : participants.values()) {
+            WritableMap participant = new WritableNativeMap();
+            participant.putString("participantId", p.getId());
+            participant.putString("userId", p.getUserId());
+            participantsArr.pushMap(participant);
+        }
+
+        map.putString("conversationId", c.getId());
+        map.putString("displayName", c.getDisplayName();
+        map.putString("lastUpdatedAt", c.getLastUpdatedAt().toString());
+        map.putMap("metadata", c.getMetadata());
+        map.putArray("participants", participantsArr);
+        return map;
+    }
+
     @ReactMethod
     public void getConversations(final Promise promise) {
         Smooch.getConversationsList(new SmoochCallback<java.util.List<Conversation>>() {
@@ -124,7 +145,11 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
                     promise.reject("" + response.getStatus(), response.getError());
                     return;
                 }
-                promise.resolve(response.getData());
+                WritableArray conversations = new WritableArray();
+                for (Conversation c : response.getData()) {
+                    conversations.pushMap(convertConversationToMap(c));
+                }
+                promise.resolve(conversations);
               }
             }
         });
