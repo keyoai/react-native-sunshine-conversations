@@ -76,24 +76,17 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void login(String userId, String jwt, final Promise promise) {
-        Log.d("__SMOOCH__", "Trying to log in");
         Smooch.login(userId, jwt, new SmoochCallback<LoginResult>() {
             @Override
             public void run(Response<LoginResult> response) {
-            Log.d("__SMOOCH__", "Inside response");
               if (promise != null) {
-                Log.d("__SMOOCH__", "Promise is good");
                 if (response.getError() != null) {
-                    Log.d("__SMOOCH__", "Rejecting promise");
                     promise.reject("" + response.getStatus(), response.getError());
                     return;
                 }
-                Log.d("__SMOOCH__", "No error, setting message delegate");
                 setMessageDelegate();
-                Log.d("__SMOOCH__", "No error, setting conversation delegate");
                 setConversationDelegate();
 
-                Log.d("__SMOOCH__", "Resolving promise");
                 promise.resolve(null);
               }
             }
@@ -513,7 +506,13 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
 
             @Override
             public void onMessageSent(@NonNull Message message, @NonNull MessageUploadStatus messageUploadStatus) {
-
+                WritableMap result = new WritableNativeMap();
+                result.putString("id", message.getId());
+                result.putString("date", message.getDate().toString());
+                result.putString("text", message.getText());
+                result.putString("author", message.getUserId());
+                result.putMap("metadata", convertMapToReactNativeMap(message.getMetadata()));
+                sendEvent(mreactContext, "message", result);
             }
 
             @Override
