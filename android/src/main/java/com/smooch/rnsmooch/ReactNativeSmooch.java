@@ -119,15 +119,15 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
 
     private WritableMap convertMapToReactNativeMap(Map<String, Object> map) {
         WritableMap result = new WritableNativeMap();
-        for (String s : map.keys()) {
-            if (map[s] instanceof String) {
-                result.putString(s, (String) map[s]);
-            } else if (map[s] instanceof Boolean) {
-                result.putBoolean(s, (Boolean) map[s]);
-            } else if (map[s] instanceof Double) {
-                result.putDouble(s, (Double) map[s]);
-            } else if (map[s] instanceof Integer) {
-                result.putInt(s, (Integer) map[s]);
+        for (String s : map.keySet()) {
+            if (map.get(s) instanceof String) {
+                result.putString(s, (String) map.get(s));
+            } else if (map.get(s) instanceof Boolean) {
+                result.putBoolean(s, (Boolean) map.get(s));
+            } else if (map.get(s) instanceof Double) {
+                result.putDouble(s, (Double) map.get(s));
+            } else if (map.get(s) instanceof Integer) {
+                result.putInt(s, (Integer) map.get(s));
             }
         }
         return result;
