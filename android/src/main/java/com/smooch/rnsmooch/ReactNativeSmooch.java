@@ -18,6 +18,8 @@ import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.facebook.react.bridge.ReadableType;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.WritableArray;
+import com.facebook.react.bridge.WritableNativeMap;
+import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
@@ -46,6 +48,7 @@ import io.smooch.core.ConversationDelegateAdapter;
 import io.smooch.core.ConversationDetails;
 import io.smooch.core.LogoutResult;
 import io.smooch.core.LoginResult;
+import io.smooch.core.Participant;
 
 public class ReactNativeSmooch extends ReactContextBaseJavaModule {
 
@@ -130,7 +133,7 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
         map.putString("conversationId", c.getId());
         map.putString("displayName", c.getDisplayName());
         map.putString("lastUpdatedAt", c.getLastUpdatedAt().toString());
-        map.putMap("metadata", c.getMetadata());
+//         map.putMap("metadata", c.getMetadata());
         map.putArray("participants", participantsArr);
         return map;
     }
