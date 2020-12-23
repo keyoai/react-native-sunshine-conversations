@@ -270,6 +270,12 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void getUserId(final Promise promise) {
+        String userId = User.getCurrentUser().getUserId();
+        promise.resolve(userId);
+    }
+
+    @ReactMethod
     public void getMessages(final Promise promise) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getReactApplicationContext());
 
