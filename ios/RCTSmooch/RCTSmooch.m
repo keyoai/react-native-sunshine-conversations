@@ -7,7 +7,9 @@
 @interface MyConversationDelegate()
 @end
 
-@interface SmoochManager()
+@interface SmoochManager() {
+   NSString *activeConversationId;
+}
 - (void)sendEvent;
 @end
 
@@ -239,6 +241,10 @@ RCT_EXPORT_METHOD(login:(NSString*)externalId jwt:(NSString*)jwt resolver:(RCTPr
       }];
   });
 };
+
+RCT_EXPORT_METHOD(setActiveConversationId:(NSString*)conversationId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
+    activeConversationId = conversationId;
+});
 
 RCT_EXPORT_METHOD(markConversationAsRead:(NSString*)conversationId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSLog(@"Smooch Mark Conversation Read");
