@@ -400,7 +400,7 @@ RCT_EXPORT_METHOD(getMessages:(NSString*)conversationId resolver:(RCTPromiseReso
                 if (message != nil && [message metadata] != nil && [message metadata][@"author"] != nil) {
                     NSMutableDictionary *newMessage = [[NSMutableDictionary alloc] init];
                     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-                    [formatter setDateFormat:@"dd"];
+                    [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZZ"];
                     newMessage[@"id"] = [message messageId]; // displayName
                     newMessage[@"text"] = [message text];
                     newMessage[@"date"] = [formatter stringFromDate:[message date]];
