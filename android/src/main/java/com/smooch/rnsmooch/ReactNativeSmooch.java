@@ -120,10 +120,10 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
     private WritableMap convertConversationToMap(Conversation c) {
         WritableMap map = new WritableNativeMap();
 
-        WritableArray participantsArr = new WritableArray();
+        WritableArray participantsArr = new WritableNativeArray();
         java.util.List<Participant> participants = c.getParticipants();
 
-        for (Participant p : participants.values()) {
+        for (Participant p : participants) {
             WritableMap participant = new WritableNativeMap();
             participant.putString("participantId", p.getId());
             participant.putString("userId", p.getUserId());
@@ -148,7 +148,7 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
                     promise.reject("" + response.getStatus(), response.getError());
                     return;
                 }
-                WritableArray conversations = new WritableArray();
+                WritableArray conversations = new WritableNativeArray();
                 for (Conversation c : response.getData()) {
                     conversations.pushMap(convertConversationToMap(c));
                 }
