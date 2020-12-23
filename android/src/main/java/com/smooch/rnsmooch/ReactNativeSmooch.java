@@ -531,11 +531,13 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
             public void onMessageSent(@NonNull Message message, @NonNull MessageUploadStatus messageUploadStatus) {
                 Log.d("__SMOOCH__ sending", message.getId());
                 Log.d("__SMOOCH__ message date", message.getDate().toString());
+                User user = User.getCurrentUser();
+
                 WritableMap result = new WritableNativeMap();
                 result.putString("id", message.getId());
                 result.putString("date", message.getDate().toString());
                 result.putString("text", message.getText());
-                result.putString("author", message.getUserId());
+                result.putString("author", user.getUserId());
                 result.putString("conversationId", activeConversationId);
                 result.putMap("metadata", convertMapToReactNativeMap(message.getMetadata()));
                 sendEvent(mreactContext, "message", result);
