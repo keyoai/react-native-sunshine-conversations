@@ -189,7 +189,7 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
                 HashMap metadata = new java.util.HashMap<java.lang.String,java.lang.Object>();
                 User user = User.getCurrentUser();
                 metadata.put("author", user.getUserId());
-                response.getData().sendMessage(new Message(message, message, ));
+                response.getData().sendMessage(new Message(message, message, metadata));
                 promise.resolve(null);
               }
             }
