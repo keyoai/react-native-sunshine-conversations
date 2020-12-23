@@ -490,8 +490,16 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
         Smooch.setConversationDelegate(new ConversationDelegate() {
             @Override
             public void onMessagesReceived(@NonNull Conversation conversation, @NonNull List<Message> list) {
-//                 WritableArray array = Arguments.fromList(list);
-//                 sendEvent(mreactContext, "message", array);
+                Log.d("__SMOOCH__", "Messages received");
+                for (Message m : list) {
+                    WritableMap message = new WritableNativeMap();
+                    message.putString("id", message.getId());
+                    message.putString("date", message.getDate().toString());
+                    message.putString("text", message.getText());
+                    message.putString("author", message.getUserId());
+                    message.putMap("metadata", convertMapToReactNativeMap(message.getMetadata()));
+                    sendEvent(mreactContext, "message", message);
+                }
             }
 
             @Override
