@@ -450,8 +450,8 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
         Smooch.setConversationDelegate(new ConversationDelegate() {
             @Override
             public void onMessagesReceived(@NonNull Conversation conversation, @NonNull List<Message> list) {
-                WritableArray array = Arguments.fromList(list);
-                sendEvent(mreactContext, "message", array);
+//                 WritableArray array = Arguments.fromList(list);
+//                 sendEvent(mreactContext, "message", array);
             }
 
             @Override
