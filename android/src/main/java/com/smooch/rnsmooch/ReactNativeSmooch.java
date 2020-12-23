@@ -281,7 +281,7 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getMessages(String conversationId, final Promise promise) {
+    public void getMessages(final String conversationId, final Promise promise) {
         Smooch.getConversationById(conversationId, new SmoochCallback<Conversation>() {
             @Override
             public void run(Response<Conversation> response) {
