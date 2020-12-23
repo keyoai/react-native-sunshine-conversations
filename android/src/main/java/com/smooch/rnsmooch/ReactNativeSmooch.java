@@ -117,6 +117,22 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
         });
     }
 
+    private WritableMap convertMapToReactNativeMap(Map<String, Object> map) {
+        WritableMap result = new WritableNativeMap();
+        for (String s : map.keys()) {
+            if (map[s] instanceof String) {
+                result.putString(s, map[s]);
+            } else if (map[s] instanceof Boolean) {
+                result.putBoolean(s, map[s]);
+            } else if (map[s] instanceof Double) {
+                result.putDouble(s, map[s]);
+            } else if (map[s] instanceof Integer) {
+                result.putInt(s, map[s]);
+            }
+        }
+        return result;
+    }
+
     private WritableMap convertConversationToMap(Conversation c) {
         WritableMap map = new WritableNativeMap();
 
@@ -130,10 +146,10 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
             participantsArr.pushMap(participant);
         }
 
-        map.putString("conversationId", c.getId());
+        map.putString("id", c.getId());
         map.putString("displayName", c.getDisplayName());
         map.putString("lastUpdatedAt", c.getLastUpdatedAt().toString());
-//         map.putMap("metadata", c.getMetadata());
+        map.putMap("metadata", convertMapToReactNativeMap(c.getMetadata()));
         map.putArray("participants", participantsArr);
         return map;
     }
