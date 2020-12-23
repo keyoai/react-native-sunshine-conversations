@@ -186,7 +186,10 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
                     promise.reject("" + response.getStatus(), response.getError());
                     return;
                 }
-                response.getData().sendMessage(new Message(message, message, new java.util.HashMap<java.lang.String,java.lang.Object>()));
+                HashMap metadata = new java.util.HashMap<java.lang.String,java.lang.Object>();
+                User user = User.getCurrentUser();
+                metadata.put("author", user.getUserId());
+                response.getData().sendMessage(new Message(message, message, ));
                 promise.resolve(null);
               }
             }
@@ -299,7 +302,7 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
                         map.putString("date", message.getDate().toString());
                         map.putString("text", message.getText());
                         map.putString("author", message.getUserId());
-                        map.putString("conversationId", activeConversationId);
+                        map.putString("conversationId", conversationId);
                         map.putMap("metadata", convertMapToReactNativeMap(message.getMetadata()));
                         promiseArray.pushMap(map);
                     }
