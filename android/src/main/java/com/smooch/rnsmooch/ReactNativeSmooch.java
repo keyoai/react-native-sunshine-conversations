@@ -296,12 +296,13 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
                 WritableArray promiseArray = Arguments.createArray();
 
                 for (Message message : messages) {
-                    if (message != null && message.getMetadata().get("author") != null) {
+                    Map metadata = message.getMetadata();
+                    if (message != null && metadata != null && metadata.get("author") != null) {
                         WritableMap map = Arguments.createMap();
                         map.putString("id", message.getId());
                         map.putString("date", message.getDate().toString());
                         map.putString("text", message.getText());
-                        map.putString("author", (String) message.getMetadata().get("author"));
+                        map.putString("author", (String) metadata.get("author"));
                         map.putString("conversationId", conversationId);
                         map.putMap("metadata", convertMapToReactNativeMap(message.getMetadata()));
                         promiseArray.pushMap(map);
