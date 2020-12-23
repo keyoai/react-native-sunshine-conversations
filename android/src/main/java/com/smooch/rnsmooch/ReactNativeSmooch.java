@@ -278,36 +278,37 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getMessages(final Promise promise) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getReactApplicationContext());
-
-        List<Message> messages = Smooch.getConversation().getMessages();
-
-        WritableArray promiseArray = Arguments.createArray();
-        for (Message message : messages) {
-            if (message != null) {
-                WritableMap map = Arguments.createMap();
-                map.putString("name", message.getName());
-                map.putString("text", message.getText());
-                map.putBoolean("isFromCurrentUser", message.isFromCurrentUser()); // map.putBoolean
-                map.putString("messageId", message.getId());
-                if (message.getMetadata() != null) {
-                    map.putString("short_property_code", (String) message.getMetadata().get("short_property_code"));
-                    map.putString("location_display_name", (String) message.getMetadata().get("location_display_name"));
+    public void getMessages(String conversationId, final Promise promise) {
+        Smooch.getConversationById(conversationId, new SmoochCallback<Conversation>() {
+            @Override
+            public void run(Response<Conversation> response) {
+              if (promise != null) {
+                if (response.getError() != null) {
+                    promise.reject("" + response.getStatus(), response.getError());
+                    return;
                 }
-                String msgId = message.getId();
-                if (message.isFromCurrentUser()) {
-                    map.putBoolean("isRead", true);
-                } else if (msgId != null) {
-                    Boolean isRead = sharedPreferences.getBoolean(msgId, false);
-                    map.putBoolean("isRead", isRead);
-                } else {
-                    map.putBoolean("isRead", false);
+
+                Conversation conversation = response.getData();
+                List<Message> messages = conversation.getMessages();
+                WritableArray promiseArray = Arguments.createArray();
+
+                for (Message message : messages) {
+                    if (message != null) {
+                        WritableMap map = Arguments.createMap();
+                        map.putString("id", message.getId());
+                        map.putString("date", message.getDate().toString());
+                        map.putString("text", message.getText());
+                        map.putString("author", user.getUserId());
+                        map.putString("conversationId", activeConversationId);
+                        map.putMap("metadata", convertMapToReactNativeMap(message.getMetadata()));
+                        promiseArray.pushMap(map);
+                    }
                 }
-                promiseArray.pushMap(map);
+
+                promise.resolve(promiseArray);
+              }
             }
-        }
-        promise.resolve(promiseArray);
+        });
     }
 
     @ReactMethod
