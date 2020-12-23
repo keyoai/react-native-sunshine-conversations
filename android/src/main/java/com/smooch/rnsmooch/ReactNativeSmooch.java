@@ -55,6 +55,7 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
     private ReactApplicationContext mreactContext;
     private ReadableMap globalMetadata = null;
 	private Boolean sendHideEvent = false;
+	private String activeConversationId;
 
     @Override
     public String getName() {
@@ -72,6 +73,11 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
         reactContext
                 .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                 .emit(eventName, params);
+    }
+
+    @ReactMethod
+    public void setActiveConversationId(String conversationId) {
+        activeConversationId = conversationId;
     }
 
     @ReactMethod
@@ -497,6 +503,7 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
                     message.putString("date", message.getDate().toString());
                     message.putString("text", message.getText());
                     message.putString("author", message.getUserId());
+                    message.putString("conversationId", conversation.getId());
                     message.putMap("metadata", convertMapToReactNativeMap(message.getMetadata()));
                     sendEvent(mreactContext, "message", message);
                 }
@@ -519,6 +526,7 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
                 result.putString("date", message.getDate().toString());
                 result.putString("text", message.getText());
                 result.putString("author", message.getUserId());
+                result.putString("conversationId", activeConversationId);
                 result.putMap("metadata", convertMapToReactNativeMap(message.getMetadata()));
                 sendEvent(mreactContext, "message", result);
             }
