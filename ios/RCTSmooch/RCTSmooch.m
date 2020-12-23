@@ -18,14 +18,13 @@
     NSLog(@"Smooch willSendMessage with %@", message);
     NSLog(@"Metadata", metadata);
     [message setMetadata:metadata];
-    [self sendEventWithName:@"message" body:@{
-      @"messageId": message.messageId,
-      @"date": message.date,
-      @"text": message.text,
-      @"author": message.author,
-      @"conversationId": conversation.conversationId,
-      @"metadata": message.metadata,
-    }]
+//     [self sendEventWithName:@"message" body:@{
+//       @"messageId": message.messageId,
+//       @"date": message.date,
+//       @"text": message.text,
+//       @"conversationId": conversation.conversationId,
+//       @"metadata": message.metadata,
+//     }];
     return message;
 }
 
