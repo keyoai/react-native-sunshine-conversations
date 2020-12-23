@@ -128,7 +128,7 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
         }
 
         map.putString("conversationId", c.getId());
-        map.putString("displayName", c.getDisplayName();
+        map.putString("displayName", c.getDisplayName());
         map.putString("lastUpdatedAt", c.getLastUpdatedAt().toString());
         map.putMap("metadata", c.getMetadata());
         map.putArray("participants", participantsArr);
