@@ -8,7 +8,7 @@
 @end
 
 @interface SmoochManager() {
-   NSString *activeConversationId;
+    NSString *activeConversationId;
 }
 - (void)sendEvent;
 @end
@@ -16,17 +16,48 @@
 @implementation MyConversationDelegate
 @synthesize someProperty;
 
+- (void)conversation:(SKTConversation *)conversation didReceiveMessages:(nonnull NSArray *)messages {
+    NSLog(@"Received Messages");
+    for (SKTMessage *message in messages) {
+        NSLog(@"Processing a message");
+        if (message != nil && [message metadata] != nil && [message metadata][@"author"] != nil) {
+            NSMutableDictionary *newMessage = [[NSMutableDictionary alloc] init];
+            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+            [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZZ"];
+            newMessage[@"id"] = [message messageId]; // displayName
+            newMessage[@"text"] = [message text];
+            newMessage[@"date"] = [formatter stringFromDate:[message date]];
+            newMessage[@"author"] = [message metadata][@"author"];
+            newMessage[@"conversationId"] = [conversation conversationId];
+            [hideId sendEventWithName:@"message" body:newMessage];
+        } else {
+            NSLog(@"There was a problem parsing the message");
+            NSLog(@"Message %@", message);
+            NSLog(@"Message metadata %@", message.metadata);
+        }
+    }
+}
+
 - (SKTMessage *)conversation:(SKTConversation *)conversation willSendMessage:(SKTMessage *)message {
     NSLog(@"Smooch willSendMessage with %@", message);
-    NSLog(@"Metadata", metadata);
-    [message setMetadata:metadata];
-//     [self sendEventWithName:@"message" body:@{
-//       @"messageId": message.messageId,
-//       @"date": message.date,
-//       @"text": message.text,
-//       @"conversationId": conversation.conversationId,
-//       @"metadata": message.metadata,
-//     }];
+    NSDictionary *metadata = message.metadata;
+    if (metadata == nil) {
+        metadata = @{};
+    }
+    NSLog(@"Metadata %@", metadata);
+    NSString *userId = [SKTUser currentUser].userId;
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZZ"];
+    NSDictionary *messageData = @{
+        @"id": [formatter stringFromDate:[message date]],
+        @"date": [formatter stringFromDate:[message date]],
+        @"text": message.text,
+        @"conversationId": conversation.conversationId,
+        @"metadata": metadata,
+        @"author": userId,
+    };
+    [hideId sendEventWithName:@"message" body:messageData];
+    NSLog(@"Smooch willSendMessage success");
     return message;
 }
 
@@ -59,7 +90,7 @@
     conversationDescription = options[@"location_display_name"];
     metadata = options;
 
-    return true;
+    return false;
 }
 
 - (void)conversation:(SKTConversation *)conversation willShowViewController:(UIViewController *)viewController {
@@ -98,6 +129,7 @@
 }
 
 + (id)sharedManager {
+    NSLog(@"Smooch setting up shared manager");
     static MyConversationDelegate *sharedMyManager = nil;
     @synchronized(self) {
         if (sharedMyManager == nil) {
@@ -533,7 +565,7 @@ RCT_EXPORT_METHOD(setSignedUpAt:(NSDate*)date) {
 
 RCT_EXPORT_METHOD(setSendHideEvent:(BOOL)hideEvent) {
   NSLog(@"Smooch setSendHideEvent");
-  MyConversationDelegate *myconversation = [MyConversationDelegate sharedManager];
+    MyConversationDelegate *myconversation = [MyConversationDelegate sharedManager];
   [myconversation setSendHideEvent:hideEvent];
 };
 
@@ -546,7 +578,7 @@ RCT_EXPORT_METHOD(setRead:(NSString *)msgId) {
 
 RCT_EXPORT_METHOD(setMetadata:(NSDictionary *)options) {
   NSLog(@"Smooch setMetadata with %@", options);
-  MyConversationDelegate *myconversation = [MyConversationDelegate sharedManager];
+    MyConversationDelegate *myconversation = [MyConversationDelegate sharedManager];
   [myconversation setMetadata:options];
   NSLog(@"Smooch getMetadata with %@", [myconversation getMetadata]);
 };
@@ -554,7 +586,7 @@ RCT_EXPORT_METHOD(setMetadata:(NSDictionary *)options) {
 RCT_EXPORT_METHOD(updateConversation:(NSString *)title description:(NSString *)description resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
   NSLog(@"Smooch updateConversation with %@", description);
-  MyConversationDelegate *myconversation = [MyConversationDelegate sharedManager];
+    MyConversationDelegate *myconversation = [MyConversationDelegate sharedManager];
   [myconversation setTitle:title description:description];
   resolve(@(YES));
 };
