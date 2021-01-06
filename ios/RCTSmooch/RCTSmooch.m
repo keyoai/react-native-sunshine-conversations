@@ -303,7 +303,10 @@ RCT_EXPORT_METHOD(sendMessage:(NSString*)conversationId message:(NSString*)messa
               reject(@"Error", @"Error sending message", error);
           }
           else {
-              SKTMessage *newMessage = [[SKTMessage alloc] initWithText:message];
+              NSDictionary *metadata = @{
+                  @"author": [SKTUser currentUser].externalId,
+              };
+              SKTMessage *newMessage = [[SKTMessage alloc] initWithText:message payload:message metadata:metadata];
               [conversation sendMessage:newMessage];
               resolve(NULL);
           }
