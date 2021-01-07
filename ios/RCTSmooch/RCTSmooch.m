@@ -302,9 +302,16 @@ RCT_EXPORT_METHOD(login:(NSString*)externalId jwt:(NSString*)jwt resolver:(RCTPr
   });
 };
 
-RCT_EXPORT_METHOD(setActiveConversationId:(NSString*)conversationId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
-    activeConversationId = conversationId;
-});
+RCT_EXPORT_METHOD(setActiveConversationId:(NSString*)conversationId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  NSLog(@"Smooch Login");
+
+  dispatch_async(dispatch_get_main_queue(), ^{
+      [Smooch loadConversation:conversationId completionHandler:^(NSError * _Nullable error, NSDictionary * _Nullable userInfo) {
+          self->activeConversationId = conversationId;
+          resolve(nil);
+      }];
+  });
+};
 
 RCT_EXPORT_METHOD(markConversationAsRead:(NSString*)conversationId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSLog(@"Smooch Mark Conversation Read");
@@ -336,6 +343,7 @@ RCT_EXPORT_METHOD(sendMessage:(NSString*)conversationId message:(NSString*)messa
               };
               SKTMessage *newMessage = [[SKTMessage alloc] initWithText:message payload:message metadata:metadata];
               [conversation sendMessage:newMessage];
+              NSLog(@"Smooch message sent");
               resolve(NULL);
           }
       }];
