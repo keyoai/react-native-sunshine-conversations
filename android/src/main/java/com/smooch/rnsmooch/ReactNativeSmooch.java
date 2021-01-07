@@ -83,7 +83,7 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
                 activeConversationId = conversationId;
                 promise.resolve(null);
             }
-        };
+        });
     }
 
     @ReactMethod
