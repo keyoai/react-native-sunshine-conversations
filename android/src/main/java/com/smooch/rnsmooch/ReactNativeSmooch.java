@@ -76,7 +76,7 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void setActiveConversationId(String conversationId, final Promise promise) {
+    public void setActiveConversationId(final String conversationId, final Promise promise) {
         Smooch.loadConversation(conversationId, new SmoochCallback<Conversation>() {
             @Override
             public void run(Response<Conversation> response) {
