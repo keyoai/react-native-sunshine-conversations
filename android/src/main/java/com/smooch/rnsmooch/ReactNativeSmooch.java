@@ -602,7 +602,9 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
 
             @Override
             public void onConversationsListUpdated(@NonNull List<Conversation> list) {
-
+                for (Conversation conversation : list) {
+                    sendEvent(mreactContext, "channel:joined", convertConversationToMap(conversation));
+                }
             }
         });
     }

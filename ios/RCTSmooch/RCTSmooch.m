@@ -16,6 +16,34 @@
 @implementation MyConversationDelegate
 @synthesize someProperty;
 
+- (void)conversationListDidRefresh:(NSArray<SKTConversation*> *)conversationList {
+    NSLog(@"Smooch conversation list refresh");
+    for (SKTConversation *conversation in conversationList) {
+        NSMutableArray *participants = [NSMutableArray arrayWithCapacity:1];
+        for (SKTParticipant *participant in conversation.participants) {
+            NSDictionary *object = @{
+                @"userId": participant.userId,
+                @"participantId": participant.participantId,
+            };
+            [participants addObject:object];
+        }
+        NSArray *participantValues = [NSArray arrayWithArray:participants];
+        NSDictionary *metadata = @{};
+        if (conversation.metadata) {
+            metadata = conversation.metadata;
+        }
+        NSDictionary *object = @{
+            @"id": conversation.conversationId,
+            @"displayName": conversation.displayName,
+            @"lastUpdatedAt": conversation.lastUpdatedAt,
+            @"metadata": metadata,
+            @"participants": participantValues,
+        };
+        NSLog(@"Smooch conversation id %@", conversation.conversationId);
+        [hideId sendEventWithName:@"channel:joined" body:object];
+    }
+}
+
 - (void)conversation:(SKTConversation *)conversation didReceiveMessages:(nonnull NSArray *)messages {
     NSLog(@"Received Messages");
     for (SKTMessage *message in messages) {
@@ -212,7 +240,7 @@ RCT_EXPORT_MODULE();
 
 - (NSArray<NSString *> *)supportedEvents
 {
-  return @[@"unreadCount", @"message", @"participant:added", @"participant:removed"];
+  return @[@"unreadCount", @"message", @"participant:added", @"participant:removed", @"channel:joined"];
 }
 
 - (BOOL)isInteger:(NSString *)toCheck {
