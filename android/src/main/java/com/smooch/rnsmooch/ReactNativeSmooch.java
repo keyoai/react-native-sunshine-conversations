@@ -471,7 +471,7 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
                 User user = User.getCurrentUser();
 
                 WritableMap result = new WritableNativeMap();
-                result.putString("id", message.getId());
+                result.putString("id", message.getDate().toString();
                 result.putString("date", message.getDate().toString());
                 result.putString("text", message.getText());
                 result.putString("author", user.getUserId());
