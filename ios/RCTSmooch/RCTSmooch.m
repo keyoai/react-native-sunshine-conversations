@@ -16,6 +16,10 @@
 @implementation MyConversationDelegate
 @synthesize someProperty;
 
+- (void)conversation:(SKTConversation *)conversation unreadCountDidChange:(NSUInteger)unreadCount {
+    NSLog(@"New unreads in %@", conversation.conversationId);
+}
+
 - (void)conversationListDidRefresh:(NSArray<SKTConversation*> *)conversationList {
     NSLog(@"Smooch conversation list refresh");
     for (SKTConversation *conversation in conversationList) {
@@ -39,8 +43,29 @@
             @"metadata": metadata,
             @"participants": participantValues,
         };
-        NSLog(@"Smooch conversation id %@", conversation.conversationId);
         [hideId sendEventWithName:@"channel:joined" body:object];
+        NSInteger unreadCount = conversation.unreadCount;
+//        [hideId sendEventWithName:@"unreadCount" body:unreadCount];
+        if (unreadCount > 0) {
+            for (SKTMessage* message in conversation.messages) {
+                if (message != nil && [message metadata] != nil && [message metadata][@"author"] != nil) {
+                    NSMutableDictionary *newMessage = [[NSMutableDictionary alloc] init];
+                    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+                    [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZZ"];
+                    newMessage[@"id"] = [message messageId]; // displayName
+                    newMessage[@"text"] = [message text];
+                    newMessage[@"date"] = [formatter stringFromDate:[message date]];
+                    newMessage[@"author"] = [message metadata][@"author"];
+                    newMessage[@"conversationId"] = [conversation conversationId];
+                    newMessage[@"metadata"] = [message metadata];
+                    [hideId sendEventWithName:@"message" body:newMessage];
+                } else {
+                    NSLog(@"There was a problem parsing the message");
+                    NSLog(@"Message %@", message);
+                    NSLog(@"Message metadata %@", message.metadata);
+                }
+            }
+        }
     }
 }
 
@@ -57,6 +82,7 @@
             newMessage[@"date"] = [formatter stringFromDate:[message date]];
             newMessage[@"author"] = [message metadata][@"author"];
             newMessage[@"conversationId"] = [conversation conversationId];
+            newMessage[@"metadata"] = [message metadata];
             [hideId sendEventWithName:@"message" body:newMessage];
         } else {
             NSLog(@"There was a problem parsing the message");
@@ -170,9 +196,6 @@
 - (void)setMetadata:(NSDictionary *)options {
     NSLog(@"Smooch setMetadata");
     metadata = options;
-    if ([Smooch conversation] != nil) {
-        [Smooch conversation].delegate = self;
-    }
 }
 - (NSDictionary *)getMetadata {
     NSLog(@"Smooch getMetadata");
@@ -193,15 +216,9 @@
     NSLog(@"Smooch setTitle");
     conversationTitle = title;
     conversationDescription = description;
-    if ([Smooch conversation] != nil) {
-        [Smooch conversation].delegate = self;
-    }
 }
 
 - (void)setControllerState:(id)callEvent {
-    if ([Smooch conversation] != nil) {
-        [Smooch conversation].delegate = self;
-    }
     hideConversation = NO;
     hideId = callEvent;
 }
@@ -295,7 +312,7 @@ RCT_EXPORT_METHOD(login:(NSString*)externalId jwt:(NSString*)jwt resolver:(RCTPr
           }
           else {
               MyConversationDelegate *myconversation = [MyConversationDelegate sharedManager];
-              [myconversation setControllerState:self];
+              [Smooch updateConversationDelegate:myconversation];
               resolve(userInfo);
           }
       }];
@@ -303,11 +320,13 @@ RCT_EXPORT_METHOD(login:(NSString*)externalId jwt:(NSString*)jwt resolver:(RCTPr
 };
 
 RCT_EXPORT_METHOD(setActiveConversationId:(NSString*)conversationId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-  NSLog(@"Smooch Login");
+  NSLog(@"Smooch active cid");
 
   dispatch_async(dispatch_get_main_queue(), ^{
       [Smooch loadConversation:conversationId completionHandler:^(NSError * _Nullable error, NSDictionary * _Nullable userInfo) {
           self->activeConversationId = conversationId;
+          MyConversationDelegate *myconversation = [MyConversationDelegate sharedManager];
+          [myconversation setControllerState:self];
           resolve(nil);
       }];
   });
