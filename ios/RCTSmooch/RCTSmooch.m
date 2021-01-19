@@ -9,6 +9,7 @@
 
 @interface SmoochManager() {
     NSString *activeConversationId;
+    NSDictionary *attributes;
 }
 - (void)sendEvent;
 @end
@@ -319,6 +320,11 @@ RCT_EXPORT_METHOD(login:(NSString*)externalId jwt:(NSString*)jwt resolver:(RCTPr
   });
 };
 
+RCT_EXPORT_METHOD(setAttributes:(NSDictionary*)attributes {
+    NSLog(@"Setting attributes %@", attributes);
+    self->attributes = attributes;
+});
+
 RCT_EXPORT_METHOD(setActiveConversationId:(NSString*)conversationId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSLog(@"Smooch active cid");
 
@@ -357,9 +363,10 @@ RCT_EXPORT_METHOD(sendMessage:(NSString*)conversationId message:(NSString*)messa
               reject(@"Error", @"Error sending message", error);
           }
           else {
-              NSDictionary *metadata = @{
+              NSMutableDictionary *metadata = @{
                   @"author": [SKTUser currentUser].externalId,
               };
+              [metadata addEntriesFromDictionary:self->attributes];
               SKTMessage *newMessage = [[SKTMessage alloc] initWithText:message payload:message metadata:metadata];
               [conversation sendMessage:newMessage];
               NSLog(@"Smooch message sent");
