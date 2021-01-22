@@ -1,4 +1,4 @@
 package com.smooch.rnsmooch;
 
-public class MyFileProvider extends androidx.core.content.FileProvider {
+public class FileProvider extends androidx.core.content.FileProvider {
 }
