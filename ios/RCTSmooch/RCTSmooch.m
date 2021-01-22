@@ -320,10 +320,10 @@ RCT_EXPORT_METHOD(login:(NSString*)externalId jwt:(NSString*)jwt resolver:(RCTPr
   });
 };
 
-RCT_EXPORT_METHOD(setAttributes:(NSDictionary*)attributes {
+RCT_EXPORT_METHOD(setAttributes:(NSDictionary*)attributes) {
     NSLog(@"Setting attributes %@", attributes);
     self->attributes = attributes;
-});
+};
 
 RCT_EXPORT_METHOD(setActiveConversationId:(NSString*)conversationId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSLog(@"Smooch active cid");
@@ -333,6 +333,7 @@ RCT_EXPORT_METHOD(setActiveConversationId:(NSString*)conversationId resolver:(RC
           self->activeConversationId = conversationId;
           MyConversationDelegate *myconversation = [MyConversationDelegate sharedManager];
           [myconversation setControllerState:self];
+
           resolve(nil);
       }];
   });
@@ -366,7 +367,10 @@ RCT_EXPORT_METHOD(sendMessage:(NSString*)conversationId message:(NSString*)messa
               NSMutableDictionary *metadata = @{
                   @"author": [SKTUser currentUser].externalId,
               };
-              [metadata addEntriesFromDictionary:self->attributes];
+//              if (self->attributes) {
+//                  [metadata addEntriesFromDictionary:self->attributes];
+//              }
+              NSLog(@"attributes %@", attributes);
               SKTMessage *newMessage = [[SKTMessage alloc] initWithText:message payload:message metadata:metadata];
               [conversation sendMessage:newMessage];
               NSLog(@"Smooch message sent");
