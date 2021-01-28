@@ -37,12 +37,24 @@
         if (conversation.metadata) {
             metadata = conversation.metadata;
         }
+        SKTMessage *lastMessage = [[conversation messages] lastObject];
+        NSMutableDictionary *newMessage = [[NSMutableDictionary alloc] init];
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZZ"];
+        newMessage[@"id"] = [lastMessage messageId]; // displayName
+        newMessage[@"text"] = [lastMessage text];
+        newMessage[@"date"] = [formatter stringFromDate:[lastMessage date]];
+        newMessage[@"author"] = [lastMessage metadata][@"author"];
+        newMessage[@"conversationId"] = [conversation conversationId];
+        newMessage[@"metadata"] = [lastMessage metadata];
         NSDictionary *object = @{
             @"id": conversation.conversationId,
             @"displayName": conversation.displayName,
             @"lastUpdatedAt": conversation.lastUpdatedAt,
             @"metadata": metadata,
             @"participants": participantValues,
+            @"messageCount": [NSNumber numberWithInteger:conversation.unreadCount],
+            @"lastMessage": newMessage,
         };
         [hideId sendEventWithName:@"channel:joined" body:object];
         NSInteger unreadCount = conversation.unreadCount;
@@ -364,13 +376,13 @@ RCT_EXPORT_METHOD(sendMessage:(NSString*)conversationId message:(NSString*)messa
               reject(@"Error", @"Error sending message", error);
           }
           else {
-              NSMutableDictionary *metadata = @{
+              NSMutableDictionary *metadata = [[NSMutableDictionary alloc] init];
+              [metadata addEntriesFromDictionary:@{
                   @"author": [SKTUser currentUser].externalId,
-              };
-//              if (self->attributes) {
-//                  [metadata addEntriesFromDictionary:self->attributes];
-//              }
-              NSLog(@"attributes %@", attributes);
+              }];
+              if (self->attributes) {
+                  [metadata addEntriesFromDictionary:self->attributes];
+              }
               SKTMessage *newMessage = [[SKTMessage alloc] initWithText:message payload:message metadata:metadata];
               [conversation sendMessage:newMessage];
               NSLog(@"Smooch message sent");
@@ -404,12 +416,27 @@ RCT_EXPORT_METHOD(getConversations:(RCTPromiseResolveBlock)resolve rejecter:(RCT
                 if (element.metadata) {
                     metadata = element.metadata;
                 }
+                SKTMessage *lastMessage = [[element messages] lastObject];
+                NSMutableDictionary *newMessage = [[NSMutableDictionary alloc] init];
+                if (![lastMessage metadata][@"isInternalNote"]) {
+                    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+                    [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZ-ZZ"];
+                    newMessage[@"id"] = [lastMessage messageId]; // displayName
+                    newMessage[@"text"] = [lastMessage text];
+                    newMessage[@"date"] = [formatter stringFromDate:[lastMessage date]];
+                    newMessage[@"author"] = [lastMessage metadata][@"author"];
+                    newMessage[@"conversationId"] = [element conversationId];
+                    newMessage[@"metadata"] = [lastMessage metadata];
+                }
+                NSLog(@"last message %@", lastMessage);
                 NSDictionary *object = @{
                     @"id": element.conversationId,
                     @"displayName": element.displayName,
                     @"lastUpdatedAt": element.lastUpdatedAt,
                     @"metadata": metadata,
                     @"participants": participantValues,
+                    @"messageCount": [NSNumber numberWithInteger:element.unreadCount],
+                    @"lastMessage": newMessage,
                 };
                 [values addObject:object];
             }
