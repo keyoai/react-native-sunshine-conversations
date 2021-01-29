@@ -482,28 +482,6 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
                 sendEvent(mreactContext, "message", result);
                 return message;
             }
-
-            @Override
-            public Message beforeDisplay(ConversationDetails conversationDetails, Message message) {
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getReactApplicationContext());
-                if (globalMetadata != null && message != null && message.getMetadata() != null && message.getMetadata().get("short_property_code").equals(getProperties(globalMetadata).get("short_property_code"))) {
-                    String msgId = message.getId();
-                    if (msgId != null) {
-                        Boolean isRead = sharedPreferences.getBoolean(msgId, false);
-                        if (!isRead) {
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putBoolean(msgId, true);
-                            editor.apply();
-                        }
-                    }
-                    return message;
-                }
-                return null;
-            }
-
-            @Override
-            public Message beforeNotification(String s, Message message) {
-            }
         });
     }
     private void setConversationDelegate() {
