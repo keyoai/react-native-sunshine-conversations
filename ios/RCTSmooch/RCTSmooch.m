@@ -540,6 +540,7 @@ RCT_EXPORT_METHOD(getMessages:(NSString*)conversationId resolver:(RCTPromiseReso
                     newMessage[@"date"] = [formatter stringFromDate:[message date]];
                     newMessage[@"author"] = [message metadata][@"author"];
                     newMessage[@"conversationId"] = [conversation conversationId];
+                    newMessage[@"metadata"] = [message metadata];
                     [newMessages addObject: newMessage];
                 }
             }
