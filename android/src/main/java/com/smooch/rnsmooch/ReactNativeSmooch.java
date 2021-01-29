@@ -55,7 +55,6 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
     private ReadableMap globalMetadata = null;
 	private Boolean sendHideEvent = false;
 	private String activeConversationId;
-	private ReadableMap
 
     @Override
     public String getName() {
