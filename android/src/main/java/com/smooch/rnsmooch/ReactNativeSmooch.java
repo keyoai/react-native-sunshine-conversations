@@ -140,6 +140,17 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
         return result;
     }
 
+    private WritableMap convertMessageToMap(Message m) {
+        WritableMap map = Arguments.createMap();
+        map.putString("id", message.getId());
+        map.putString("date", message.getDate().toString());
+        map.putString("text", message.getText());
+        map.putString("author", (String) metadata.get("author"));
+        map.putString("conversationId", conversationId);
+        map.putMap("metadata", convertMapToReactNativeMap(message.getMetadata()));
+        return map;
+    }
+
     private WritableMap convertConversationToMap(Conversation c) {
         WritableMap map = new WritableNativeMap();
 
@@ -153,11 +164,16 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
             participantsArr.pushMap(participant);
         }
 
+        java.util.List<Message> messages = c.getMessages();
+
+        Message lastMessage = messages.get(messages.size() - 1);
+
         map.putString("id", c.getId());
         map.putString("displayName", c.getDisplayName());
         map.putString("lastUpdatedAt", c.getLastUpdatedAt().toString());
         map.putMap("metadata", convertMapToReactNativeMap(c.getMetadata()));
         map.putArray("participants", participantsArr);
+        map.putMap("lastMessage", convertMapToReactNativeMap(convertMessageToMap(lastMessage)));
         return map;
     }
 
@@ -292,13 +308,7 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
                 for (Message message : messages) {
                     Map metadata = message.getMetadata();
                     if (message != null && metadata != null && metadata.get("author") != null) {
-                        WritableMap map = Arguments.createMap();
-                        map.putString("id", message.getId());
-                        map.putString("date", message.getDate().toString());
-                        map.putString("text", message.getText());
-                        map.putString("author", (String) metadata.get("author"));
-                        map.putString("conversationId", conversationId);
-                        map.putMap("metadata", convertMapToReactNativeMap(message.getMetadata()));
+                        WritableMap map = convertMessageToMap(message);
                         promiseArray.pushMap(map);
                     }
                 }
