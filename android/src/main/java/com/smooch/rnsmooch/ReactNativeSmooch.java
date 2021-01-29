@@ -40,7 +40,6 @@ import io.smooch.core.Smooch;
 import io.smooch.core.SmoochCallback;
 import io.smooch.core.SmoochConnectionStatus;
 import io.smooch.core.User;
-import io.smooch.ui.ConversationActivity;
 import io.smooch.core.MessageModifierDelegate;
 import io.smooch.core.Message;
 import io.smooch.core.Conversation;
@@ -219,17 +218,6 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
                 promise.resolve(null);
             }
         });
-    }
-
-    @ReactMethod
-    public void show() {
-        ConversationActivity.builder().withFlags(Intent.FLAG_ACTIVITY_NEW_TASK).show(getReactApplicationContext());
-        // v8 ConversationActivity.show(getReactApplicationContext(), Intent.FLAG_ACTIVITY_NEW_TASK);
-    }
-
-    @ReactMethod
-    public void close() {
-        ConversationActivity.close();
     }
 
     @ReactMethod
