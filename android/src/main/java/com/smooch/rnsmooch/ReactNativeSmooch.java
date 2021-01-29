@@ -503,24 +503,6 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
 
             @Override
             public Message beforeNotification(String s, Message message) {
-
-                WritableMap params = Arguments.createMap();
-                if (message.getMetadata() == null) {
-                    return null;
-                }
-                String code = (String) message.getMetadata().get("short_property_code");
-                params.putString("short_property_code", code);
-                String name = (String) message.getMetadata().get("location_display_name");
-                params.putString("location_display_name", name);
-
-                setMetadata(params);
-                updateConversation("Conversation", name, null);
-                if (sendHideEvent) {
-                    Log.d("onUnreadCountUpdate", "on beforeNotification");
-                    sendEvent(mreactContext, "unreadCountUpdate", null);
-                }
-
-                return message;
             }
         });
     }
