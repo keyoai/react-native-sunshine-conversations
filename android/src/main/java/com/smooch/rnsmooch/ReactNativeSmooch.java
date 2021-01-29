@@ -140,7 +140,8 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
         return result;
     }
 
-    private WritableMap convertMessageToMap(Message m) {
+    private WritableMap convertMessageToMap(Message message) {
+        Map metadata = message.getMetadata();
         WritableMap map = Arguments.createMap();
         map.putString("id", message.getId());
         map.putString("date", message.getDate().toString());
