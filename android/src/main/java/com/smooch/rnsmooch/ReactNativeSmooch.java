@@ -214,6 +214,7 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
                 HashMap metadata = new java.util.HashMap<java.lang.String,java.lang.Object>();
                 User user = User.getCurrentUser();
                 metadata.put("author", user.getUserId());
+                metadata.putAll(globalMetadata);
                 response.getData().sendMessage(new Message(message, message, metadata));
                 promise.resolve(null);
               }
@@ -465,11 +466,6 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
         Smooch.setMessageModifierDelegate(new MessageModifierDelegate() {
             @Override
             public Message beforeSend(ConversationDetails conversationDetails, Message message) {
-                if (globalMetadata != null) {
-                    Log.d("Smooch", String.valueOf(globalMetadata));
-                    message.setMetadata(getProperties(globalMetadata));
-                }
-
                 User user = User.getCurrentUser();
 
                 WritableMap result = new WritableNativeMap();
@@ -480,6 +476,16 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
                 result.putString("conversationId", activeConversationId);
                 result.putMap("metadata", convertMapToReactNativeMap(message.getMetadata()));
                 sendEvent(mreactContext, "message", result);
+                return message;
+            }
+
+            @Override
+            public Message beforeDisplay(ConversationDetails conversationDetails, Message message) {
+                return message;
+            }
+
+            @Override
+            public Message beforeNotification(String s, Message message) {
                 return message;
             }
         });
