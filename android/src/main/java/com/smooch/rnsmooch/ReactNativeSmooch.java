@@ -55,6 +55,7 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
     private ReadableMap globalMetadata = null;
 	private Boolean sendHideEvent = false;
 	private String activeConversationId;
+	private ReadableMap
 
     @Override
     public String getName() {
@@ -419,7 +420,7 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void setMetadata(final ReadableMap metadata) {
+    public void setAttributes(final ReadableMap metadata) {
         this.globalMetadata = metadata;
     }
 
