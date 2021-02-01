@@ -526,7 +526,10 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
 
             @Override
             public void onUnreadCountChanged(@NonNull Conversation conversation, int i) {
-
+                WritableMap result = new WritableNativeMap();
+                result.putString("conversationId", conversation.id);
+                result.putInt("unreadCount", i);
+                sendEvent(mreactContext, "unreadCount", result);
             }
 
             @Override

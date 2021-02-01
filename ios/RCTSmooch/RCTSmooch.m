@@ -18,7 +18,11 @@
 @synthesize someProperty;
 
 - (void)conversation:(SKTConversation *)conversation unreadCountDidChange:(NSUInteger)unreadCount {
-    NSLog(@"New unreads in %@", conversation.conversationId);
+    NSDictionary *object = @{
+        @"conversationId": conversation.conversationId;
+        @"unreadCount": unreadCount,
+    };
+    [hideId sendEventWithName:@"unreadCount" body:object];
 }
 
 - (void)conversationListDidRefresh:(NSArray<SKTConversation*> *)conversationList {
