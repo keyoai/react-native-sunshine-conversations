@@ -55,6 +55,7 @@
             @"participants": participantValues,
             @"messageCount": [NSNumber numberWithInteger:conversation.messageCount],
             @"lastMessage": newMessage,
+            @"unreadCount": [NSNumber numberWithInteger:conversation.messageCount],
         };
         [hideId sendEventWithName:@"channel:joined" body:object];
         NSInteger unreadCount = conversation.unreadCount;
@@ -451,6 +452,7 @@ RCT_EXPORT_METHOD(getConversations:(RCTPromiseResolveBlock)resolve rejecter:(RCT
                     @"participants": participantValues,
                     @"messageCount": [NSNumber numberWithInteger:element.messageCount],
                     @"lastMessage": newMessage,
+                    @"unreadCount": element.unreadCount,
                 };
                 [values addObject:object];
             }
