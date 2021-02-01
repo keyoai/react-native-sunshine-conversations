@@ -242,7 +242,7 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public int getUnreadCount(String conversationId, Promise promise) {
+    public void getUnreadCount(String conversationId, Promise promise) {
         Smooch.getConversationById(conversationId, new SmoochCallback<Conversation>() {
             @Override
             public void run(Response<Conversation> response) {
@@ -255,7 +255,6 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
               }
             }
          });
-        promise.resolve(unreadCount);
     }
 
     @ReactMethod
