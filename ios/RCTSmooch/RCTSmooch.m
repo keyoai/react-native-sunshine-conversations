@@ -19,8 +19,8 @@
 
 - (void)conversation:(SKTConversation *)conversation unreadCountDidChange:(NSUInteger)unreadCount {
     NSDictionary *object = @{
-        @"conversationId": conversation.conversationId;
-        @"unreadCount": unreadCount,
+        @"conversationId": conversation.conversationId,
+        @"unreadCount": [NSNumber numberWithInteger:conversation.unreadCount],
     };
     [hideId sendEventWithName:@"unreadCount" body:object];
 }
@@ -59,7 +59,7 @@
             @"participants": participantValues,
             @"messageCount": [NSNumber numberWithInteger:conversation.messageCount],
             @"lastMessage": newMessage,
-            @"unreadCount": [NSNumber numberWithInteger:conversation.messageCount],
+            @"unreadCount": [NSNumber numberWithInteger:conversation.unreadCount],
         };
         [hideId sendEventWithName:@"channel:joined" body:object];
         NSInteger unreadCount = conversation.unreadCount;
@@ -456,7 +456,7 @@ RCT_EXPORT_METHOD(getConversations:(RCTPromiseResolveBlock)resolve rejecter:(RCT
                     @"participants": participantValues,
                     @"messageCount": [NSNumber numberWithInteger:element.messageCount],
                     @"lastMessage": newMessage,
-                    @"unreadCount": element.unreadCount,
+                    @"unreadCount": [NSNumber numberWithInteger:element.unreadCount],
                 };
                 [values addObject:object];
             }
