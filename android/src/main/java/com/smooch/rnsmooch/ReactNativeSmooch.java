@@ -242,8 +242,19 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getUnreadCount(Promise promise) {
-        int unreadCount = Smooch.getConversation().getUnreadCount();
+    public int getUnreadCount(String conversationId, Promise promise) {
+        int unreadCount = Smooch.getConversationById(conversationId, new SmoochCallback<Conversation>() {
+            @Override
+            public void run(Response<Conversation> response) {
+              if (promise != null) {
+                if (response.getError() != null) {
+                    promise.reject("" + response.getStatus(), response.getError());
+                    return;
+                }
+                promise.resolve(response.getData().getUnreadCount());
+              }
+            }
+         });
         promise.resolve(unreadCount);
     }
 
@@ -469,7 +480,7 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
                 User user = User.getCurrentUser();
 
                 WritableMap result = new WritableNativeMap();
-                result.putString("id", message.getDate().toString());
+                result.putString("id", message.getText());
                 result.putString("date", message.getDate().toString());
                 result.putString("text", message.getText());
                 result.putString("author", user.getUserId());

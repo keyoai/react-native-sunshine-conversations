@@ -53,7 +53,7 @@
             @"lastUpdatedAt": conversation.lastUpdatedAt,
             @"metadata": metadata,
             @"participants": participantValues,
-            @"messageCount": [NSNumber numberWithInteger:conversation.unreadCount],
+            @"messageCount": [NSNumber numberWithInteger:conversation.messageCount],
             @"lastMessage": newMessage,
         };
         [hideId sendEventWithName:@"channel:joined" body:object];
@@ -116,7 +116,7 @@
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZZ"];
     NSDictionary *messageData = @{
-        @"id": [formatter stringFromDate:[message date]],
+        @"id": message.text,
         @"date": [formatter stringFromDate:[message date]],
         @"text": message.text,
         @"conversationId": conversation.conversationId,
@@ -367,6 +367,20 @@ RCT_EXPORT_METHOD(markConversationAsRead:(NSString*)conversationId resolver:(RCT
   });
 };
 
+RCT_EXPORT_METHOD(getUnreadCount:(NSString*) conversationId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [Smooch conversationById:conversationId completionHandler:^(NSError * _Nullable error, SKTConversation * _Nullable conversation) {
+            if (error) {
+                NSLog(@"Error getting conversation");
+                reject(@"Error", @"Error getting conversation", error);
+            }
+            else {
+                resolve([NSNumber numberWithInteger:conversation.unreadCount]);
+            }
+        }];
+    });
+}
+
 RCT_EXPORT_METHOD(sendMessage:(NSString*)conversationId message:(NSString*)message resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSLog(@"Smooch send message");
   dispatch_async(dispatch_get_main_queue(), ^{
@@ -435,7 +449,7 @@ RCT_EXPORT_METHOD(getConversations:(RCTPromiseResolveBlock)resolve rejecter:(RCT
                     @"lastUpdatedAt": element.lastUpdatedAt,
                     @"metadata": metadata,
                     @"participants": participantValues,
-                    @"messageCount": [NSNumber numberWithInteger:element.unreadCount],
+                    @"messageCount": [NSNumber numberWithInteger:element.messageCount],
                     @"lastMessage": newMessage,
                 };
                 [values addObject:object];
@@ -625,15 +639,6 @@ RCT_EXPORT_METHOD(getMessagesMetadata:(NSDictionary *)metadata resolver:(RCTProm
     }
   }
   resolve(newMessages);
-};
-
-RCT_REMAP_METHOD(getUnreadCount,
-                  resolver:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject) {
-  NSLog(@"Smooch getUnreadCount");
-
-  long unreadCount = [Smooch conversation].unreadCount;
-  resolve(@(unreadCount));
 };
 
 RCT_EXPORT_METHOD(setFirstName:(NSString*)firstName) {
