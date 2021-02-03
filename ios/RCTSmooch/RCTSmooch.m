@@ -62,28 +62,6 @@
             @"unreadCount": [NSNumber numberWithInteger:conversation.unreadCount],
         };
         [hideId sendEventWithName:@"channel:joined" body:object];
-        NSInteger unreadCount = conversation.unreadCount;
-//        [hideId sendEventWithName:@"unreadCount" body:unreadCount];
-        if (unreadCount > 0) {
-            for (SKTMessage* message in conversation.messages) {
-                if (message != nil && [message metadata] != nil && [message metadata][@"author"] != nil) {
-                    NSMutableDictionary *newMessage = [[NSMutableDictionary alloc] init];
-                    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-                    [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZZ"];
-                    newMessage[@"id"] = [message messageId]; // displayName
-                    newMessage[@"text"] = [message text];
-                    newMessage[@"date"] = [formatter stringFromDate:[message date]];
-                    newMessage[@"author"] = [message metadata][@"author"];
-                    newMessage[@"conversationId"] = [conversation conversationId];
-                    newMessage[@"metadata"] = [message metadata];
-                    [hideId sendEventWithName:@"message" body:newMessage];
-                } else {
-                    NSLog(@"There was a problem parsing the message");
-                    NSLog(@"Message %@", message);
-                    NSLog(@"Message metadata %@", message.metadata);
-                }
-            }
-        }
     }
 }
 
@@ -698,30 +676,6 @@ RCT_EXPORT_METHOD(updateConversation:(NSString *)title description:(NSString *)d
   [myconversation setTitle:title description:description];
   resolve(@(YES));
 };
-
-// Version 9.0.0
-//
-//RCT_EXPORT_METHOD(updateConversation:(NSString*)title description:(NSString*)description  resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-//
-//  NSLog(@"Smooch updateConversation with %@", description);
-//
-//  NSString *conversationId = [Smooch conversation].conversationId;
-//  if (conversationId != nil) {
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//        [Smooch updateConversationById:conversationId withName:title description:description iconUrl:nil metadata:nil completionHandler:^(NSError * _Nullable error, NSDictionary * _Nullable userInfo) {
-//            if (error) {
-//                reject(
-//                   userInfo[SKTErrorCodeIdentifier],
-//                   userInfo[SKTErrorDescriptionIdentifier],
-//                   error);
-//            }
-//            else {
-//                resolve(userInfo);
-//            }
-//        }];
-//    });
-//  }
-//};
 
 
 @end
