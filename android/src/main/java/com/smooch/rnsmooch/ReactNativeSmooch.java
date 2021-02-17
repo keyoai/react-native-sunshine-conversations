@@ -194,8 +194,11 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
                     return;
                 }
                 WritableArray conversations = new WritableNativeArray();
-                for (Conversation c : response.getData()) {
-                    conversations.pushMap(convertConversationToMap(c));
+                java.util.List<Conversation> data = response.getData();
+                if (data != null && data.size() > 0) {
+                    for (Conversation c : response.getData()) {
+                        conversations.pushMap(convertConversationToMap(c));
+                    }
                 }
                 promise.resolve(conversations);
               }
@@ -591,8 +594,10 @@ public class ReactNativeSmooch extends ReactContextBaseJavaModule {
 
             @Override
             public void onConversationsListUpdated(@NonNull List<Conversation> list) {
-                for (Conversation conversation : list) {
-                    sendEvent(mreactContext, "channel:joined", convertConversationToMap(conversation));
+                if (list != null && list.size() > 0) {
+                    for (Conversation conversation : list) {
+                        sendEvent(mreactContext, "channel:joined", convertConversationToMap(conversation));
+                    }
                 }
             }
         });
